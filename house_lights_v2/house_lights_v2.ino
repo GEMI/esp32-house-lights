@@ -3,7 +3,7 @@
 #include "light_manager.h"
 
 #define BYTES_VAL_T unsigned long
-
+#define LED_BUILTIN 2
 #define SHIFT_REGISTER_COUNT 3
 #define DATA_WIDTH SHIFT_REGISTER_COUNT * 8
 
