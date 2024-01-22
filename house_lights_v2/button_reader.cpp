@@ -2,18 +2,13 @@
 
 // https://playground.arduino.cc/Code/ShiftRegSN74HC165N/
 // This is the input reading part
-// How many 74HC165 Shift registers are you connecting?
-#define SHIFT_REGISTER_COUNT 3
-/* Width of data (how many ext lines). */
-#define DATA_WIDTH SHIFT_REGISTER_COUNT * 8
+/* Width of data (how many ext lines). 4 x 8 */
+#define DATA_WIDTH 32
 /* Width of pulse to trigger the shift register to read and latch. */
 
 #define PULSE_WIDTH_USEC 5
 /* Optional delay between shift register reads. */
 #define POLL_DELAY_MSEC 1
-/* You will need to change the "int" to "long" If the
-   SHIFT_REGISTER_COUNT is higher than 2.
-*/
 #define BYTES_VAL_T unsigned long
 
 int PARALEL_LOAD_PIN  = 16;  // Connects to Parallel load pin GPIO16 / RX2
@@ -25,34 +20,25 @@ int CLOCK_PIN         = 19;  // Connects to the Clock pin GIO19
    serial Data from the shift register chips and representing
    the state of those pins in an unsigned integer (or long).
 */
-BYTES_VAL_T readShiftRegisterValues() {
+BYTES_VAL_T readShiftRegisterValues()
+{
   long bitVal;
   BYTES_VAL_T bytesVal = 0;
 
-  /* Trigger a parallel Load to latch the state of the data lines */
   digitalWrite(CLOCK_ENABLE_PIN, HIGH);
   digitalWrite(PARALEL_LOAD_PIN, LOW);
   delayMicroseconds(PULSE_WIDTH_USEC);
-
   digitalWrite(PARALEL_LOAD_PIN, HIGH);
   digitalWrite(CLOCK_ENABLE_PIN, LOW);
 
-  /* Loop to read each bit value from the serial out line
-     of the SN74HC165N.
-  */
-  for (int i = 0; i < DATA_WIDTH; i++) {
-    // Probably just create an array of bits
+  for (int i = 0; i < DATA_WIDTH; i++)
+  {
     bitVal = digitalRead(DATA_PIN);
-
-    /* Set the corresponding bit in bytesVal. */
     bytesVal |= (bitVal << ((DATA_WIDTH - 1) - i));
-
-    /* Pulse the Clock (rising edge shifts the next bit). */
     digitalWrite(CLOCK_PIN, HIGH);
     delayMicroseconds(PULSE_WIDTH_USEC);
     digitalWrite(CLOCK_PIN, LOW);
   }
-
   return (bytesVal);
 }
 

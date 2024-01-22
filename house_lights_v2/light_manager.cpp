@@ -8,14 +8,13 @@
 
 // Set the number of shift registers 74HC595 you are using
 // For each 16 in relay board we need 2 shift registers
-#define SHIFT_REGISTER_COUNT 1
+#define SHIFT_REGISTER_COUNT 4
 
 // Define which Arduino IO pins you are connecting to the relay group
 int PIN_DATA = 26;           // Connects SER / Data pin / DS (Serial Data Input)
-// int PIN_OUTPUT_ENABLE = 26;  // Connects OE / Output enabled
-
-int PIN_LATCH = 25;         // Connects to ST_CP (Storage Register Clock Input, Latch)
 int PIN_CLOCK = 33;         // Connects SH_CP (Shift Register Clock Input)
+int PIN_LATCH = 25;         // Connects to ST_CP (Storage Register Clock Input, Latch)
+
 
 void toggleBit(byte* relayState, int index, int bitPosition) {
   relayState[index] ^= (1 << bitPosition);
@@ -39,10 +38,10 @@ void writeDataToRelays(byte data[]) {
   Serial.print("\r\n");
 
 
-  digitalWrite(PIN_LATCH, LOW);
-  // Set all relays
-  for (int i = 0; i < SHIFT_REGISTER_COUNT; i++) {
-    shiftOut(PIN_DATA, PIN_CLOCK, MSBFIRST, data[i]);
-  }
-  digitalWrite(PIN_LATCH, HIGH);
+  // digitalWrite(PIN_LATCH, LOW);
+  // // Set all relays
+  // for (int i = 0; i < SHIFT_REGISTER_COUNT * 8; i++) {
+  //   shiftOut(PIN_DATA, PIN_CLOCK, MSBFIRST, data[i]);
+  // }
+  // digitalWrite(PIN_LATCH, HIGH);
 }
